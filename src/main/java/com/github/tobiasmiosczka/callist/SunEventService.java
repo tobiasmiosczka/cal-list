@@ -87,8 +87,8 @@ public class SunEventService {
     }
 
     public byte[] convertCalendarToByteArray(final Calendar calendar) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new CalendarOutputter().output(calendar, baos);
-        return baos.toByteArray();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        new CalendarOutputter().output(calendar, outputStream);
+        return outputStream.toByteArray();
     }
 }

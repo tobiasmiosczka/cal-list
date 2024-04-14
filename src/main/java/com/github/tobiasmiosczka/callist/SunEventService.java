@@ -72,7 +72,7 @@ public class SunEventService {
         VEvent eventSunrise = new VEvent(
                 toDateTime(day.getSunrise(), zoneId, vTimeZone),
                 toDateTime(day.getSunrise(), zoneId, vTimeZone),
-                "Sun");
+                "Sunrise");
         eventSunrise.getProperties().add(UID_GENERATOR.generateUid());
         eventSunrise.getProperties().add(new Description(""));
         eventSunrise.getProperties().add(new Location(""));
@@ -81,7 +81,7 @@ public class SunEventService {
         VEvent eventSunset = new VEvent(
                 toDateTime(day.getSunset(), zoneId, vTimeZone),
                 toDateTime(day.getSunset(), zoneId, vTimeZone),
-                "Sun");
+                "Sunset");
         eventSunrise.getProperties().add(UID_GENERATOR.generateUid());
         eventSunrise.getProperties().add(new Description(""));
         eventSunrise.getProperties().add(new Location(""));

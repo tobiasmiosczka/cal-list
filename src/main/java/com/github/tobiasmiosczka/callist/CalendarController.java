@@ -32,11 +32,11 @@ public class CalendarController {
     @GetMapping("/sun/calendar.ics")
     @ResponseBody
     public byte[] getCalendars(
-            ServerHttpRequest serverHttpRequest,
-            @RequestParam UUID token,
-            @RequestParam double latitude,
-            @RequestParam double longitude,
-            @RequestParam int altitude) {
+            final ServerHttpRequest serverHttpRequest,
+            @RequestParam final UUID token,
+            @RequestParam final double latitude,
+            @RequestParam final double longitude,
+            @RequestParam final int altitude) {
         LOGGER.info("Token: " + token
                 + " Remote: " + serverHttpRequest.getRemoteAddress()
                 + " Headers: " + serverHttpRequest.getHeaders().entrySet().stream()

@@ -24,6 +24,7 @@ import java.util.List;
 public class SunEventService {
 
     private static final UidGenerator UID_GENERATOR = new RandomUidGenerator();
+    private static final TimeZoneRegistry REGISTRY = TimeZoneRegistryFactory.getInstance().createRegistry();
 
     private final SunService sunService;
 
@@ -33,8 +34,7 @@ public class SunEventService {
     }
 
     public Calendar getCalendar(double latitude, double longitude, int altitude, LocalDate now, int size, ZoneId zoneId) {
-        final TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-        final VTimeZone vTimeZone = registry.getTimeZone(zoneId.toString()).getVTimeZone();
+        final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         final Calendar calendar = prepareCalendar(vTimeZone, latitude, longitude, altitude);
         final List<SunService.Sun> days = sunService.getSunriseSunset(now, size, zoneId, latitude, longitude, altitude);
         final List<VEvent> events = getEvents(days, zoneId, vTimeZone);

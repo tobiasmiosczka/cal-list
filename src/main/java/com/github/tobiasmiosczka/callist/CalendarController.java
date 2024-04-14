@@ -34,9 +34,9 @@ public class CalendarController {
     public byte[] getCalendars(
             ServerHttpRequest serverHttpRequest,
             @RequestParam UUID token,
-            @RequestParam(required = false) Double latitude,
-            @RequestParam(required = false) Double longitude,
-            @RequestParam(required = false) Integer altitude) {
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam int altitude) {
         LOGGER.info("Token: " + token
                 + " Remote: " + serverHttpRequest.getRemoteAddress()
                 + " Headers: " + serverHttpRequest.getHeaders().entrySet().stream()
@@ -44,9 +44,6 @@ public class CalendarController {
                 .reduce((s1, s2) -> s1 + " " + s2)
                 .map(e -> "{" + e + "}")
                 .orElse("{}"));
-        if (latitude == null || longitude == null || altitude == null) {
-            return new byte[0];
-        }
         final LocalDate now = LocalDate.now();
         final ZoneId zoneId = ZoneId.of("Europe/Berlin");
         final Calendar calendar = sunEventService.getCalendar(latitude, longitude, altitude, now, SIZE, zoneId);

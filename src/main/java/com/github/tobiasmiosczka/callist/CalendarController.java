@@ -4,13 +4,12 @@ import net.fortuna.ical4j.model.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.UUID;
@@ -21,17 +20,18 @@ public class CalendarController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalendarController.class);
     private final static int SIZE = 365;
 
-    private final SunEventService sunEventService;
+    private final SunshineEventService sunshineEventService;
+    private final WorkHoursEventService workHoursEventService;
 
     @Autowired
-    public CalendarController(final SunEventService sunEventService) {
-        this.sunEventService = sunEventService;
+    public CalendarController(final SunshineEventService sunshineEventService, final WorkHoursEventService workHoursEventService) {
+        this.sunshineEventService = sunshineEventService;
+        this.workHoursEventService = workHoursEventService;
     }
 
     //http://localhost:8080/sun/calendar.ics?latitude=51.56227&longitude=6.7434&altitude=0&token=1acd9867-bdda-4e56-afe1-32a7f7ad4913
-    @GetMapping("/sun/calendar.ics")
-    @ResponseBody
-    public byte[] getCalendars(
+    @GetMapping(value = "/sun/calendar.ics", produces = "text/calendar")
+    public ResponseEntity<Calendar> getSunshineCalendars(
             final ServerHttpRequest serverHttpRequest,
             @RequestParam final UUID token,
             @RequestParam final double latitude,
@@ -46,12 +46,7 @@ public class CalendarController {
                 .orElse("{}"));
         final LocalDate now = LocalDate.now();
         final ZoneId zoneId = ZoneId.of("Europe/Berlin");
-        final Calendar calendar = sunEventService.getCalendar(latitude, longitude, altitude, now, now.plusDays(SIZE), zoneId);
-        try {
-            return sunEventService.convertCalendarToByteArray(calendar);
-        } catch (IOException e) {
-            return new byte[0];
-        }
+        final Calendar calendar = sunshineEventService.getCalendar(latitude, longitude, altitude, now, now.plusDays(SIZE), zoneId);
+        return new ResponseEntity<>(calendar, HttpStatus.OK);
     }
-
 }

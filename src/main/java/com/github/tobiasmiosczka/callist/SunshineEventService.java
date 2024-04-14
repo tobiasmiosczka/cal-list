@@ -1,17 +1,23 @@
 package com.github.tobiasmiosczka.callist;
 
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SunEventService {
+public class SunshineEventService {
 
     private static final UidGenerator UID_GENERATOR = new RandomUidGenerator();
     private static final TimeZoneRegistry REGISTRY = TimeZoneRegistryFactory.getInstance().createRegistry();
@@ -27,7 +33,7 @@ public class SunEventService {
     private final SunService sunService;
 
     @Autowired
-    public SunEventService(final SunService sunService) {
+    public SunshineEventService(final SunService sunService) {
         this.sunService = sunService;
     }
 
@@ -94,11 +100,5 @@ public class SunEventService {
         dateTime.setTime(localDateTime.atZone(zoneId).toInstant().toEpochMilli());
         dateTime.setTimeZone(new TimeZone(vTimeZone));
         return dateTime;
-    }
-
-    public byte[] convertCalendarToByteArray(final Calendar calendar) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        new CalendarOutputter().output(calendar, outputStream);
-        return outputStream.toByteArray();
     }
 }

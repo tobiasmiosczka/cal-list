@@ -39,7 +39,7 @@ public class SunEventService {
             final ZoneId zoneId) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         final Calendar calendar = prepareCalendar(vTimeZone, latitude, longitude, altitude);
-        final List<SunService.Sun> days = sunService.getSunriseSunset(from, to, zoneId, latitude, longitude, altitude);
+        final List<SunService.Sunshine> days = sunService.getSunriseSunset(from, to, zoneId, latitude, longitude, altitude);
         final List<VEvent> events = getEvents(days, zoneId, vTimeZone);
         calendar.getComponents().addAll(events);
         return calendar;
@@ -58,7 +58,7 @@ public class SunEventService {
     }
 
     private static List<VEvent> getEvents(
-            final List<SunService.Sun> days,
+            final List<SunService.Sunshine> days,
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
         return days.stream()
@@ -66,7 +66,7 @@ public class SunEventService {
                 .toList();
     }
 
-    private static VEvent getvEvent(final SunService.Sun day, final ZoneId zoneId, final VTimeZone vTimeZone) {
+    private static VEvent getvEvent(final SunService.Sunshine day, final ZoneId zoneId, final VTimeZone vTimeZone) {
         DateTime startDate = toDateTime(day.getSunrise(), zoneId, vTimeZone);
         DateTime endDate = toDateTime(day.getSunset(), zoneId, vTimeZone);
         VEvent event = new VEvent(startDate, endDate, "Sun");

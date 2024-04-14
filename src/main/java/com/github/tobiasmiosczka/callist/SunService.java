@@ -15,11 +15,11 @@ import java.util.Optional;
 @Service
 public class SunService {
 
-    public class Sun {
+    public static class Sunshine {
         private final LocalDateTime sunrise;
         private final LocalDateTime sunset;
 
-        public Sun(final LocalDateTime sunrise, final LocalDateTime sunset) {
+        public Sunshine(final LocalDateTime sunrise, final LocalDateTime sunset) {
             this.sunrise = sunrise;
             this.sunset = sunset;
         }
@@ -37,7 +37,7 @@ public class SunService {
         TZDATA.init();
     }
 
-    public List<Sun> getSunriseSunset(
+    public List<Sunshine> getSunriseSunset(
             final LocalDate from,
             final LocalDate to,
             final ZoneId zoneId,
@@ -50,7 +50,7 @@ public class SunService {
                 .toList();
     }
 
-    public Sun getSunriseSunset(final LocalDate date, final ZoneId zoneId, final SolarTime solarTime) {
+    private Sunshine getSunriseSunset(final LocalDate date, final ZoneId zoneId, final SolarTime solarTime) {
         final Optional<LocalDateTime> sunrise = solarTime.sunrise().apply(PlainDate.from(date))
                 .map(Moment::toTemporalAccessor)
                 .map(instant -> LocalDateTime.ofInstant(instant, zoneId));
@@ -58,7 +58,7 @@ public class SunService {
                 .map(Moment::toTemporalAccessor)
                 .map(instant -> LocalDateTime.ofInstant(instant, zoneId));
         if (sunrise.isPresent() && sunset.isPresent()) {
-            return new Sun(sunrise.get(), sunset.get());
+            return new Sunshine(sunrise.get(), sunset.get());
         }
         return null;
     }

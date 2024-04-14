@@ -48,9 +48,9 @@ public class SunEventService {
 
     private static Calendar prepareCalendar(
             final VTimeZone vTimeZone,
-            double latitude,
-            double longitude,
-            int altitude) {
+            final double latitude,
+            final double longitude,
+            final int altitude) {
         final Calendar calendar = new Calendar();
         calendar.getProperties().add(new ProdId("-//Sun " + longitude + " " + latitude + " " + altitude + "//EN"));
         calendar.getProperties().add(Version.VERSION_2_0);
@@ -63,30 +63,26 @@ public class SunEventService {
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
         return days.stream()
-                .flatMap(e -> getvEvent(e, zoneId, vTimeZone).stream())
+                .flatMap(e -> getvEvents(e, zoneId, vTimeZone).stream())
                 .toList();
     }
 
-    private static List<VEvent> getvEvent(final SunService.Sunshine day, final ZoneId zoneId, final VTimeZone vTimeZone) {
+    private static List<VEvent> getvEvents(
+            final SunService.Sunshine day,
+            final ZoneId zoneId,
+            final VTimeZone vTimeZone) {
         List<VEvent> result = new ArrayList<>(2);
-        VEvent eventSunrise = new VEvent(
-                toDateTime(day.getSunrise(), zoneId, vTimeZone),
-                toDateTime(day.getSunrise(), zoneId, vTimeZone),
-                "Sunrise");
-        eventSunrise.getProperties().add(UID_GENERATOR.generateUid());
-        eventSunrise.getProperties().add(new Description(""));
-        eventSunrise.getProperties().add(new Location(""));
-        result.add(eventSunrise);
+        result.add(toEvent(toDateTime(day.getSunrise(), zoneId, vTimeZone), "Sunrise"));
+        result.add(toEvent(toDateTime(day.getSunset(), zoneId, vTimeZone), "Sunset"));
+        return result;
+    }
 
-        VEvent eventSunset = new VEvent(
-                toDateTime(day.getSunset(), zoneId, vTimeZone),
-                toDateTime(day.getSunset(), zoneId, vTimeZone),
-                "Sunset");
-        eventSunrise.getProperties().add(UID_GENERATOR.generateUid());
-        eventSunrise.getProperties().add(new Description(""));
-        eventSunrise.getProperties().add(new Location(""));
-        result.add(eventSunset);
-
+    private static VEvent toEvent(final DateTime dateTime, final String summary) {
+        VEvent result = new VEvent(dateTime, dateTime, summary);
+        PropertyList<Property> properties = result.getProperties();
+        properties.add(UID_GENERATOR.generateUid());
+        properties.add(new Description(""));
+        properties.add(new Location(""));
         return result;
     }
 

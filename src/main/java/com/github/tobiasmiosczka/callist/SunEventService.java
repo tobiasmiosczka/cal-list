@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,18 +63,31 @@ public class SunEventService {
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
         return days.stream()
-                .map(e -> getvEvent(e, zoneId, vTimeZone))
+                .flatMap(e -> getvEvent(e, zoneId, vTimeZone).stream())
                 .toList();
     }
 
-    private static VEvent getvEvent(final SunService.Sunshine day, final ZoneId zoneId, final VTimeZone vTimeZone) {
-        DateTime startDate = toDateTime(day.getSunrise(), zoneId, vTimeZone);
-        DateTime endDate = toDateTime(day.getSunset(), zoneId, vTimeZone);
-        VEvent event = new VEvent(startDate, endDate, "Sun");
-        event.getProperties().add(UID_GENERATOR.generateUid());
-        event.getProperties().add(new Description(""));
-        event.getProperties().add(new Location(""));
-        return event;
+    private static List<VEvent> getvEvent(final SunService.Sunshine day, final ZoneId zoneId, final VTimeZone vTimeZone) {
+        List<VEvent> result = new ArrayList<>(2);
+        VEvent eventSunrise = new VEvent(
+                toDateTime(day.getSunrise(), zoneId, vTimeZone),
+                toDateTime(day.getSunrise(), zoneId, vTimeZone),
+                "Sun");
+        eventSunrise.getProperties().add(UID_GENERATOR.generateUid());
+        eventSunrise.getProperties().add(new Description(""));
+        eventSunrise.getProperties().add(new Location(""));
+        result.add(eventSunrise);
+
+        VEvent eventSunset = new VEvent(
+                toDateTime(day.getSunset(), zoneId, vTimeZone),
+                toDateTime(day.getSunset(), zoneId, vTimeZone),
+                "Sun");
+        eventSunrise.getProperties().add(UID_GENERATOR.generateUid());
+        eventSunrise.getProperties().add(new Description(""));
+        eventSunrise.getProperties().add(new Location(""));
+        result.add(eventSunset);
+
+        return result;
     }
 
     private static DateTime toDateTime(

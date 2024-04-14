@@ -46,7 +46,7 @@ public class CalendarController {
                 .orElse("{}"));
         final LocalDate now = LocalDate.now();
         final ZoneId zoneId = ZoneId.of("Europe/Berlin");
-        final Calendar calendar = sunEventService.getCalendar(latitude, longitude, altitude, now, SIZE, zoneId);
+        final Calendar calendar = sunEventService.getCalendar(latitude, longitude, altitude, now, now.plusDays(SIZE), zoneId);
         try {
             return sunEventService.convertCalendarToByteArray(calendar);
         } catch (IOException e) {

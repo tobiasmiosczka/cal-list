@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.LongStream;
 
 @Service
 public class SunService {
@@ -38,10 +37,15 @@ public class SunService {
         TZDATA.init();
     }
 
-    public List<Sun> getSunriseSunset(final LocalDate date, final int count, final ZoneId zoneId, final double latitude, final double longitude, final int altitude) {
+    public List<Sun> getSunriseSunset(
+            final LocalDate from,
+            final LocalDate to,
+            final ZoneId zoneId,
+            final double latitude,
+            final double longitude,
+            final int altitude) {
         final SolarTime solarTime = SolarTime.ofLocation(latitude, longitude, altitude, "NOAA");
-        return LongStream.range(0L, count)
-                .mapToObj(date::plusDays)
+        return from.datesUntil(to)
                 .map(e -> getSunriseSunset(e, zoneId, solarTime))
                 .toList();
     }

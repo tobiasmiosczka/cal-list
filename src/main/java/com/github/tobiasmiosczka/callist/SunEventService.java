@@ -4,10 +4,7 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +30,26 @@ public class SunEventService {
         this.sunService = sunService;
     }
 
-    public Calendar getCalendar(double latitude, double longitude, int altitude, LocalDate now, int size, ZoneId zoneId) {
+    public Calendar getCalendar(
+            final double latitude,
+            final double longitude,
+            final int altitude,
+            final LocalDate from,
+            final LocalDate to,
+            final ZoneId zoneId) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         final Calendar calendar = prepareCalendar(vTimeZone, latitude, longitude, altitude);
-        final List<SunService.Sun> days = sunService.getSunriseSunset(now, size, zoneId, latitude, longitude, altitude);
+        final List<SunService.Sun> days = sunService.getSunriseSunset(from, to, zoneId, latitude, longitude, altitude);
         final List<VEvent> events = getEvents(days, zoneId, vTimeZone);
         calendar.getComponents().addAll(events);
         return calendar;
     }
 
-    private static Calendar prepareCalendar(final VTimeZone vTimeZone, double latitude, double longitude, int altitude) {
+    private static Calendar prepareCalendar(
+            final VTimeZone vTimeZone,
+            double latitude,
+            double longitude,
+            int altitude) {
         final Calendar calendar = new Calendar();
         calendar.getProperties().add(new ProdId("-//Sun " + longitude + " " + latitude + " " + altitude + "//EN"));
         calendar.getProperties().add(Version.VERSION_2_0);
@@ -50,7 +57,10 @@ public class SunEventService {
         return calendar;
     }
 
-    private static List<VEvent> getEvents(final List<SunService.Sun> days, final ZoneId zoneId, final VTimeZone vTimeZone) {
+    private static List<VEvent> getEvents(
+            final List<SunService.Sun> days,
+            final ZoneId zoneId,
+            final VTimeZone vTimeZone) {
         return days.stream()
                 .map(e -> getvEvent(e, zoneId, vTimeZone))
                 .toList();
@@ -66,7 +76,10 @@ public class SunEventService {
         return event;
     }
 
-    private static DateTime toDateTime(final LocalDateTime localDateTime, final ZoneId zoneId, final VTimeZone vTimeZone) {
+    private static DateTime toDateTime(
+            final LocalDateTime localDateTime,
+            final ZoneId zoneId,
+            final VTimeZone vTimeZone) {
         DateTime dateTime = new DateTime();
         dateTime.setTime(localDateTime.atZone(zoneId).toInstant().toEpochMilli());
         dateTime.setTimeZone(new TimeZone(vTimeZone));

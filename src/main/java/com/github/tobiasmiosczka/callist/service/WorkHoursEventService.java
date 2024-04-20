@@ -1,6 +1,6 @@
 package com.github.tobiasmiosczka.callist.service;
 
-import com.github.tobiasmiosczka.callist.DatePropertiesBuilder;
+import com.github.tobiasmiosczka.callist.EventBuilder;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -110,7 +110,7 @@ public class WorkHoursEventService {
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
         try {
-            return DatePropertiesBuilder.builder()
+            return EventBuilder.builder()
                     .with(new Summary("Office Hours"))
                     .with(new DtStart(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, start), zoneId, vTimeZone)))
                     .with(new DtEnd(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, end), zoneId, vTimeZone)))

@@ -2,25 +2,23 @@ package com.github.tobiasmiosczka.callist;
 
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.DateProperty;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class DatePropertiesBuilder {
+public class EventBuilder {
 
     private final List<Property> properties;
 
-    public static DatePropertiesBuilder builder() {
-        return new DatePropertiesBuilder();
+    public static EventBuilder builder() {
+        return new EventBuilder();
     }
 
-    private DatePropertiesBuilder() {
+    private EventBuilder() {
         this.properties = new ArrayList<>();
     }
 
-    public DatePropertiesBuilder with(final Property property) {
+    public EventBuilder with(final Property property) {
         this.properties.add(property);
         return this;
     }

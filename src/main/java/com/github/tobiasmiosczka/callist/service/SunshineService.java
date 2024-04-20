@@ -1,5 +1,6 @@
-package com.github.tobiasmiosczka.callist;
+package com.github.tobiasmiosczka.callist.service;
 
+import com.github.tobiasmiosczka.callist.model.Sunshine;
 import net.time4j.Moment;
 import net.time4j.PlainDate;
 import net.time4j.calendar.astro.SolarTime;
@@ -13,27 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SunService {
+public class SunshineService {
 
-    public static class Sunshine {
-        private final LocalDateTime sunrise;
-        private final LocalDateTime sunset;
+    public static final String CALCULATOR = "NOAA";
 
-        public Sunshine(final LocalDateTime sunrise, final LocalDateTime sunset) {
-            this.sunrise = sunrise;
-            this.sunset = sunset;
-        }
-
-        public LocalDateTime getSunrise() {
-            return sunrise;
-        }
-
-        public LocalDateTime getSunset() {
-            return sunset;
-        }
-    }
-
-    public SunService() {
+    public SunshineService() {
         TZDATA.init();
     }
 
@@ -44,7 +29,7 @@ public class SunService {
             final double latitude,
             final double longitude,
             final int altitude) {
-        final SolarTime solarTime = SolarTime.ofLocation(latitude, longitude, altitude, "NOAA");
+        final SolarTime solarTime = SolarTime.ofLocation(latitude, longitude, altitude, CALCULATOR);
         return from.datesUntil(to)
                 .map(e -> getSunriseSunset(e, zoneId, solarTime))
                 .toList();

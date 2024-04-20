@@ -1,10 +1,10 @@
-package com.github.tobiasmiosczka.callist;
+package com.github.tobiasmiosczka.callist.service;
 
+import com.github.tobiasmiosczka.callist.model.Sunshine;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -19,10 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
 
 @Service
 public class SunshineEventService {
@@ -30,10 +31,10 @@ public class SunshineEventService {
     private static final UidGenerator UID_GENERATOR = new RandomUidGenerator();
     private static final TimeZoneRegistry REGISTRY = TimeZoneRegistryFactory.getInstance().createRegistry();
 
-    private final SunService sunService;
+    private final SunshineService sunService;
 
     @Autowired
-    public SunshineEventService(final SunService sunService) {
+    public SunshineEventService(final SunshineService sunService) {
         this.sunService = sunService;
     }
 
@@ -43,11 +44,13 @@ public class SunshineEventService {
             final int altitude,
             final LocalDate from,
             final LocalDate to,
-            final ZoneId zoneId) {
+            final ZoneId zoneId,
+            final String sunriseEventSummary,
+            final String sunsetEventSummary) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         final Calendar calendar = prepareCalendar(vTimeZone, latitude, longitude, altitude);
-        final List<SunService.Sunshine> days = sunService.getSunriseSunset(from, to, zoneId, latitude, longitude, altitude);
-        final List<VEvent> events = getEvents(days, zoneId, vTimeZone);
+        final List<Sunshine> days = sunService.getSunriseSunset(from, to, zoneId, latitude, longitude, altitude);
+        final List<VEvent> events = getEvents(days, zoneId, vTimeZone, sunriseEventSummary, sunsetEventSummary);
         calendar.getComponents().addAll(events);
         return calendar;
     }
@@ -65,21 +68,25 @@ public class SunshineEventService {
     }
 
     private static List<VEvent> getEvents(
-            final List<SunService.Sunshine> days,
+            final List<Sunshine> days,
             final ZoneId zoneId,
-            final VTimeZone vTimeZone) {
+            final VTimeZone vTimeZone,
+            final String sunriseEventSummary,
+            final String sunsetEventSummary) {
         return days.stream()
-                .flatMap(e -> getvEvents(e, zoneId, vTimeZone).stream())
+                .flatMap(e -> getvEvents(e, zoneId, vTimeZone, sunriseEventSummary, sunsetEventSummary).stream())
                 .toList();
     }
 
     private static List<VEvent> getvEvents(
-            final SunService.Sunshine day,
+            final Sunshine day,
             final ZoneId zoneId,
-            final VTimeZone vTimeZone) {
+            final VTimeZone vTimeZone,
+            final String sunriseEventSummary,
+            final String sunsetEventSummary) {
         List<VEvent> result = new ArrayList<>(2);
-        result.add(toEvent(toDateTime(day.getSunrise(), zoneId, vTimeZone), "Sunrise"));
-        result.add(toEvent(toDateTime(day.getSunset(), zoneId, vTimeZone), "Sunset"));
+        result.add(toEvent(toDateTime(day.getSunrise(), zoneId, vTimeZone), sunriseEventSummary));
+        result.add(toEvent(toDateTime(day.getSunset(), zoneId, vTimeZone), sunsetEventSummary));
         return result;
     }
 
@@ -90,15 +97,5 @@ public class SunshineEventService {
         properties.add(new Description(""));
         properties.add(new Location(""));
         return result;
-    }
-
-    private static DateTime toDateTime(
-            final LocalDateTime localDateTime,
-            final ZoneId zoneId,
-            final VTimeZone vTimeZone) {
-        DateTime dateTime = new DateTime();
-        dateTime.setTime(localDateTime.atZone(zoneId).toInstant().toEpochMilli());
-        dateTime.setTimeZone(new TimeZone(vTimeZone));
-        return dateTime;
     }
 }

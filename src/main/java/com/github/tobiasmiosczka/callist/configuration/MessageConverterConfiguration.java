@@ -1,4 +1,4 @@
-package com.github.tobiasmiosczka.callist;
+package com.github.tobiasmiosczka.callist.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;

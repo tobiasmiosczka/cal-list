@@ -1,4 +1,4 @@
-package com.github.tobiasmiosczka.callist;
+package com.github.tobiasmiosczka.callist.configuration;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
@@ -15,8 +15,12 @@ import java.util.Map;
 
 public class CalendarEncoder extends AbstractSingleValueEncoder<Calendar> {
 
+    public static final String TEXT_CALENDAR = "text/calendar";
+    public static final MimeType MIME_TYPE_TEXT_CALENDAR = new MimeType("text", "calendar");
+
+
     public CalendarEncoder() {
-        super(new MimeType("text", "calendar"));
+        super(MIME_TYPE_TEXT_CALENDAR);
     }
 
     @Override

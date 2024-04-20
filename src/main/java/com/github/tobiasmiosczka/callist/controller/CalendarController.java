@@ -34,17 +34,23 @@ public class CalendarController {
             @RequestParam final double longitude,
             @RequestParam(defaultValue = "0") final int altitude,
             @RequestParam(defaultValue = "Sunrise") final String sunriseEventSummary,
-            @RequestParam(defaultValue = "Sunset") final String sunsetEventSummary) {
+            @RequestParam(defaultValue = "Sunset") final String sunsetEventSummary,
+            @RequestParam final ZoneId zoneId) {
         final LocalDate now = LocalDate.now();
-        final ZoneId zoneId = ZoneId.of("Europe/Berlin"); //TODO: parameterize
-        final Calendar calendar = sunshineEventService
-                .getCalendar(latitude, longitude, altitude, now, now.plusDays(SIZE), zoneId, sunriseEventSummary, sunsetEventSummary);
+        final Calendar calendar = sunshineEventService.getCalendar(
+                latitude,
+                longitude,
+                altitude,
+                now,
+                now.plusDays(SIZE),
+                zoneId,
+                sunriseEventSummary,
+                sunsetEventSummary);
         return new ResponseEntity<>(calendar, HttpStatus.OK);
     }
 
     @GetMapping(value = "/work-hours/calendar.ics", produces = TEXT_CALENDAR)
-    public ResponseEntity<Calendar> getWorkHoursCalendar() {
-        final ZoneId zoneId = ZoneId.of("Europe/Berlin"); //TODO: parameterize
+    public ResponseEntity<Calendar> getWorkHoursCalendar(@RequestParam final ZoneId zoneId) {
         final Calendar calendar = workHoursEventService.getCalendar(zoneId);
         return new ResponseEntity<>(calendar, HttpStatus.OK);
     }

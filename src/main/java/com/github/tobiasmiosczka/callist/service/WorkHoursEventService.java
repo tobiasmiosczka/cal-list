@@ -15,7 +15,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
 import static java.time.DayOfWeek.*;
@@ -42,7 +45,7 @@ public class WorkHoursEventService {
             this.dayOff = true;
         }
 
-        public static Shift of(final LocalTime from, final LocalTime to) {
+        public static Shift shift(final LocalTime from, final LocalTime to) {
             return new Shift(from, to);
         }
 
@@ -67,11 +70,11 @@ public class WorkHoursEventService {
 
     public Calendar getCalendar(final ZoneId zoneId) {
         final Map<DayOfWeek, Shift> shifts = Map.ofEntries(
-                Map.entry(   MONDAY, Shift.of(of(7, 0), of(19, 0))),
-                Map.entry(  TUESDAY, Shift.of(of(7, 0), of(19, 0))),
-                Map.entry(WEDNESDAY, Shift.of(of(7, 0), of(19, 0))),
-                Map.entry( THURSDAY, Shift.of(of(7, 0), of(19, 0))),
-                Map.entry(   FRIDAY, Shift.of(of(7, 0), of(19, 0))),
+                Map.entry(   MONDAY, Shift.shift(of(7, 0), of(19, 0))),
+                Map.entry(  TUESDAY, Shift.shift(of(7, 0), of(19, 0))),
+                Map.entry(WEDNESDAY, Shift.shift(of(7, 0), of(19, 0))),
+                Map.entry( THURSDAY, Shift.shift(of(7, 0), of(19, 0))),
+                Map.entry(   FRIDAY, Shift.shift(of(7, 0), of(19, 0))),
                 Map.entry( SATURDAY, Shift.dayOff()),
                 Map.entry(   SUNDAY, Shift.dayOff()));
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
@@ -129,7 +132,7 @@ public class WorkHoursEventService {
                 .withNano(localTime.getNano());
     }
 
-    private static RRule generateWeeklyRule(DayOfWeek dayOfWeek) throws ParseException {
+    private static RRule generateWeeklyRule(final DayOfWeek dayOfWeek) throws ParseException {
         final String dayOfWeekString = dayOfWeek.toString().substring(0, 2).toUpperCase();
         return new RRule("FREQ=WEEKLY;BYDAY=" + dayOfWeekString);
     }

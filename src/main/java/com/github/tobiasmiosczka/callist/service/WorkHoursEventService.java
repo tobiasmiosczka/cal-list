@@ -11,8 +11,7 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
@@ -60,25 +59,19 @@ public class WorkHoursEventService {
             final Shift shift,
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
-        final LocalTime start = shift.getFrom();
-        final LocalTime end = shift.getTo();
+        final LocalDate date = getNextWeekDay(dayOfWeek);
         return EventBuilder.builder()
                 .withSummary("Office Hours")
-                .withStart(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, start), zoneId, vTimeZone))
-                .withEnd(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, end), zoneId, vTimeZone))
+                .withStart(toDateTime(date.atTime(shift.getStart()), zoneId, vTimeZone))
+                .withEnd(toDateTime(date.atTime(shift.getEnd()), zoneId, vTimeZone))
                 .withRuleWeekly(dayOfWeek)
                 .build();
     }
 
-    private static LocalDateTime getLocalDateTimeWithGivenTime(final DayOfWeek dayOfWeek, final LocalTime localTime) {
-        LocalDateTime now = LocalDateTime.now();
+    private static LocalDate getNextWeekDay(final DayOfWeek dayOfWeek) {
+        LocalDate now = LocalDate.now();
         long dayOffset = dayOfWeek.getValue() - now.getDayOfWeek().getValue();
-        return now
-                .plusDays(dayOffset)
-                .withHour(localTime.getHour())
-                .withMinute(localTime.getMinute())
-                .withSecond(localTime.getSecond())
-                .withNano(localTime.getNano());
+        return now.plusDays(dayOffset);
     }
 
 }

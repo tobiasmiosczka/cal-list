@@ -15,11 +15,11 @@ public class Shift {
         return new Shift(from, to);
     }
 
-    public LocalTime getFrom() {
+    public LocalTime getStart() {
         return from;
     }
 
-    public LocalTime getTo() {
+    public LocalTime getEnd() {
         return to;
     }
 }

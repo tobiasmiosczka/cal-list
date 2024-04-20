@@ -17,13 +17,10 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
 import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
-import static java.time.DayOfWeek.SATURDAY;
-import static java.time.DayOfWeek.SUNDAY;
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.TUESDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
@@ -41,9 +38,7 @@ public class WorkHoursEventService {
                 Map.entry(TUESDAY, Shift.shift(of(7, 0), of(19, 0))),
                 Map.entry(WEDNESDAY, Shift.shift(of(7, 0), of(19, 0))),
                 Map.entry(THURSDAY, Shift.shift(of(7, 0), of(19, 0))),
-                Map.entry(FRIDAY, Shift.shift(of(7, 0), of(19, 0))),
-                Map.entry(SATURDAY, Shift.dayOff()),
-                Map.entry(SUNDAY, Shift.dayOff()));
+                Map.entry(FRIDAY, Shift.shift(of(7, 0), of(19, 0))));
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         return CalendarBuilder.builder()
                 .withId("-//WorkHours//EN")
@@ -55,21 +50,17 @@ public class WorkHoursEventService {
     private static List<VEvent> toEvents(final Map<DayOfWeek, Shift> shifts, final ZoneId zoneId) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         return Arrays.stream(values())
+                .filter(shifts::containsKey)
                 .map(dayOfWeek -> toEvents(dayOfWeek, shifts.get(dayOfWeek), zoneId, vTimeZone))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
                 .toList();
     }
 
-    private static Optional<VEvent> toEvents(
+    private static VEvent toEvents(
             final DayOfWeek dayOfWeek,
             final Shift shift,
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
-        if (shift.isDayOff()) {
-            return Optional.empty();
-        }
-        return Optional.of(generateWeeklyEvent(dayOfWeek, shift.getFrom(), shift.getTo(), zoneId, vTimeZone));
+        return generateWeeklyEvent(dayOfWeek, shift.getFrom(), shift.getTo(), zoneId, vTimeZone);
     }
 
     private static VEvent generateWeeklyEvent(

@@ -51,24 +51,17 @@ public class WorkHoursEventService {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         return Arrays.stream(values())
                 .filter(shifts::containsKey)
-                .map(dayOfWeek -> toEvents(dayOfWeek, shifts.get(dayOfWeek), zoneId, vTimeZone))
+                .map(dayOfWeek -> toEvent(dayOfWeek, shifts.get(dayOfWeek), zoneId, vTimeZone))
                 .toList();
     }
 
-    private static VEvent toEvents(
+    private static VEvent toEvent(
             final DayOfWeek dayOfWeek,
             final Shift shift,
             final ZoneId zoneId,
             final VTimeZone vTimeZone) {
-        return generateWeeklyEvent(dayOfWeek, shift.getFrom(), shift.getTo(), zoneId, vTimeZone);
-    }
-
-    private static VEvent generateWeeklyEvent(
-            final DayOfWeek dayOfWeek,
-            final LocalTime start,
-            final LocalTime end,
-            final ZoneId zoneId,
-            final VTimeZone vTimeZone) {
+        final LocalTime start = shift.getFrom();
+        final LocalTime end = shift.getTo();
         return EventBuilder.builder()
                 .withSummary("Office Hours")
                 .withStart(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, start), zoneId, vTimeZone))

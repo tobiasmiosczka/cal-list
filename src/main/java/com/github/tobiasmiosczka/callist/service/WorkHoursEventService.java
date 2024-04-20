@@ -1,11 +1,15 @@
 package com.github.tobiasmiosczka.callist.service;
 
 import com.github.tobiasmiosczka.callist.EventBuilder;
-import net.fortuna.ical4j.model.*;
+import com.github.tobiasmiosczka.callist.model.Shift;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Version;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -19,49 +23,20 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
-import static java.time.DayOfWeek.*;
+import static java.time.DayOfWeek.FRIDAY;
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.time.DayOfWeek.THURSDAY;
+import static java.time.DayOfWeek.TUESDAY;
+import static java.time.DayOfWeek.WEDNESDAY;
+import static java.time.DayOfWeek.values;
 import static java.time.LocalTime.of;
 
 @Service
 public class WorkHoursEventService {
 
-    private static class Shift {
-        private final LocalTime from;
-        private final LocalTime to;
-        private final boolean dayOff;
 
-        public Shift(LocalTime from, LocalTime to) {
-            this.from = from;
-            this.to = to;
-            this.dayOff = false;
-        }
-
-        public Shift() {
-            this.from = null;
-            this.to = null;
-            this.dayOff = true;
-        }
-
-        public static Shift shift(final LocalTime from, final LocalTime to) {
-            return new Shift(from, to);
-        }
-
-        public static Shift dayOff() {
-            return new Shift();
-        }
-
-        public LocalTime getFrom() {
-            return from;
-        }
-
-        public LocalTime getTo() {
-            return to;
-        }
-
-        public boolean isDayOff() {
-            return dayOff;
-        }
-    }
 
     private static final TimeZoneRegistry REGISTRY = TimeZoneRegistryFactory.getInstance().createRegistry();
 

@@ -1,31 +1,29 @@
 package com.github.tobiasmiosczka.callist;
 
 import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EventBuilder {
 
-    private final List<Property> properties;
+    private final VEvent actual;
+    private final PropertyList<Property> properties;
 
     public static EventBuilder builder() {
         return new EventBuilder();
     }
 
     private EventBuilder() {
-        this.properties = new ArrayList<>();
+        this.actual = new VEvent();
+        this.properties = actual.getProperties();
     }
 
     public EventBuilder with(final Property property) {
-        this.properties.add(property);
+        properties.add(property);
         return this;
     }
 
     public VEvent build() {
-        final VEvent result = new VEvent();
-        result.getProperties().addAll(properties);
-        return result;
+        return actual;
     }
 }

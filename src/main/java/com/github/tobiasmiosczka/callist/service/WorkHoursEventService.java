@@ -6,8 +6,6 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.*;
-import net.fortuna.ical4j.util.RandomUidGenerator;
-import net.fortuna.ical4j.util.UidGenerator;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -26,7 +24,6 @@ import static java.time.LocalTime.of;
 
 @Service
 public class WorkHoursEventService {
-    private static final UidGenerator UID_GENERATOR = new RandomUidGenerator();
 
     private static class Shift {
         private final LocalTime from;
@@ -111,11 +108,10 @@ public class WorkHoursEventService {
             final VTimeZone vTimeZone) {
         try {
             return EventBuilder.builder()
-                    .with(new Summary("Office Hours"))
-                    .with(new DtStart(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, start), zoneId, vTimeZone)))
-                    .with(new DtEnd(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, end), zoneId, vTimeZone)))
+                    .withSummary("Office Hours")
+                    .withStart(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, start), zoneId, vTimeZone))
+                    .withEnd(toDateTime(getLocalDateTimeWithGivenTime(dayOfWeek, end), zoneId, vTimeZone))
                     .with(generateWeeklyRule(dayOfWeek))
-                    .with(UID_GENERATOR.generateUid())
                     .build();
         } catch (ParseException e) {
             throw new RuntimeException(e);

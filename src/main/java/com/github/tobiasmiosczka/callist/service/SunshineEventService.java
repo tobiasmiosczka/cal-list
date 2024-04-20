@@ -1,20 +1,14 @@
 package com.github.tobiasmiosczka.callist.service;
 
+import com.github.tobiasmiosczka.callist.EventBuilder;
 import com.github.tobiasmiosczka.callist.model.Sunshine;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.RandomUidGenerator;
-import net.fortuna.ical4j.util.UidGenerator;
+import net.fortuna.ical4j.model.property.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +22,6 @@ import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
 @Service
 public class SunshineEventService {
 
-    private static final UidGenerator UID_GENERATOR = new RandomUidGenerator();
     private static final TimeZoneRegistry REGISTRY = TimeZoneRegistryFactory.getInstance().createRegistry();
 
     private final SunshineService sunService;
@@ -91,11 +84,12 @@ public class SunshineEventService {
     }
 
     private static VEvent toEvent(final DateTime dateTime, final String summary) {
-        VEvent result = new VEvent(dateTime, dateTime, summary);
-        PropertyList<Property> properties = result.getProperties();
-        properties.add(UID_GENERATOR.generateUid());
-        properties.add(new Description(""));
-        properties.add(new Location(""));
-        return result;
+        return EventBuilder.builder()
+                .withStart(dateTime)
+                .withEnd(dateTime)
+                .withSummary(summary)
+                .withDescription("")
+                .withLocation("")
+                .build();
     }
 }

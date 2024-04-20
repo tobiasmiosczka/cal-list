@@ -4,11 +4,23 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.time.DayOfWeek;
 
 public class EventBuilder {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventBuilder.class);
 
     private static final UidGenerator UID_GENERATOR = new RandomUidGenerator();
 
@@ -57,5 +69,20 @@ public class EventBuilder {
     public EventBuilder withLocation(String location) {
         properties.add(new Location(location));
         return this;
+    }
+
+    public EventBuilder withRuleWeekly(DayOfWeek dayOfWeek) {
+        properties.add(generateWeeklyRule(dayOfWeek));
+        return this;
+    }
+
+    private static RRule generateWeeklyRule(final DayOfWeek dayOfWeek) {
+        final String dayOfWeekString = dayOfWeek.toString().substring(0, 2).toUpperCase();
+        try {
+            return new RRule("FREQ=WEEKLY;BYDAY=" + dayOfWeekString);
+        } catch (ParseException e) {
+            LOGGER.error("Could not create ", e);
+            throw new RuntimeException(e);
+        }
     }
 }

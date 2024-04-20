@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
@@ -77,19 +76,19 @@ public class SunshineEventService {
             final VTimeZone vTimeZone,
             final String sunriseEventSummary,
             final String sunsetEventSummary) {
-        List<VEvent> result = new ArrayList<>(2);
-        result.add(toEvent(toDateTime(day.getSunrise(), zoneId, vTimeZone), sunriseEventSummary));
-        result.add(toEvent(toDateTime(day.getSunset(), zoneId, vTimeZone), sunsetEventSummary));
-        return result;
+        final DateTime sunrise = toDateTime(day.getSunrise(), zoneId, vTimeZone);
+        final DateTime sunset = toDateTime(day.getSunset(), zoneId, vTimeZone);
+        return List.of(
+                EventBuilder.builder()
+                        .withStart(sunrise)
+                        .withEnd(sunrise)
+                        .withSummary(sunriseEventSummary)
+                        .build(),
+                EventBuilder.builder()
+                        .withStart(sunset)
+                        .withEnd(sunset)
+                        .withSummary(sunsetEventSummary)
+                        .build());
     }
 
-    private static VEvent toEvent(final DateTime dateTime, final String summary) {
-        return EventBuilder.builder()
-                .withStart(dateTime)
-                .withEnd(dateTime)
-                .withSummary(summary)
-                .withDescription("")
-                .withLocation("")
-                .build();
-    }
 }

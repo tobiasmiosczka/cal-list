@@ -1,7 +1,7 @@
-package com.github.tobiasmiosczka.callist.service;
+package com.github.tobiasmiosczka.callist.service.officehours;
 
-import com.github.tobiasmiosczka.callist.CalendarBuilder;
-import com.github.tobiasmiosczka.callist.EventBuilder;
+import com.github.tobiasmiosczka.callist.calendar.CalendarBuilder;
+import com.github.tobiasmiosczka.callist.calendar.EventBuilder;
 import com.github.tobiasmiosczka.callist.model.Shift;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
+import static com.github.tobiasmiosczka.callist.calendar.Cal4JUtil.toDateTime;
 import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.THURSDAY;
@@ -27,7 +27,7 @@ import static java.time.DayOfWeek.values;
 import static java.time.LocalTime.of;
 
 @Service
-public class WorkHoursEventService {
+public class OfficeHoursEventService {
 
     private static final TimeZoneRegistry REGISTRY = TimeZoneRegistryFactory.getInstance().createRegistry();
 
@@ -42,7 +42,7 @@ public class WorkHoursEventService {
         return CalendarBuilder.builder()
                 .withId("-//WorkHours//EN")
                 .with(vTimeZone)
-                .with(toEvents(shifts, zoneId))
+                .withEvents(toEvents(shifts, zoneId))
                 .build();
     }
 

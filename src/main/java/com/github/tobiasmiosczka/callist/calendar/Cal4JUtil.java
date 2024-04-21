@@ -1,4 +1,4 @@
-package com.github.tobiasmiosczka.callist;
+package com.github.tobiasmiosczka.callist.calendar;
 
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.TimeZone;

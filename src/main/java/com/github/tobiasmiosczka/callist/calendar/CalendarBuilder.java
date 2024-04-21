@@ -1,6 +1,9 @@
-package com.github.tobiasmiosczka.callist;
+package com.github.tobiasmiosczka.callist.calendar;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.ProdId;
@@ -44,12 +47,11 @@ public class CalendarBuilder {
         return this;
     }
 
-    public CalendarBuilder withId(final String s) {
-        this.properties.add(new ProdId(s));
-        return this;
+    public CalendarBuilder withId(final String value) {
+        return with(new ProdId(value));
     }
 
-    public CalendarBuilder with(final List<VEvent> events) {
+    public CalendarBuilder withEvents(final List<VEvent> events) {
         this.components.addAll(events);
         return this;
     }

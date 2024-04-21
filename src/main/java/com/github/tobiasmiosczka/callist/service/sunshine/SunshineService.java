@@ -1,4 +1,4 @@
-package com.github.tobiasmiosczka.callist.service;
+package com.github.tobiasmiosczka.callist.service.sunshine;
 
 import com.github.tobiasmiosczka.callist.model.DateRange;
 import com.github.tobiasmiosczka.callist.model.Position;

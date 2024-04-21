@@ -32,12 +32,22 @@ public class CalendarEncoder extends AbstractSingleValueEncoder<Calendar> {
     }
 
     @Override
-    protected Flux<DataBuffer> encode(Calendar calendar, DataBufferFactory dataBufferFactory, ResolvableType valueType, MimeType mimeType, Map<String, Object> hints) {
+    protected Flux<DataBuffer> encode(
+            Calendar calendar,
+            DataBufferFactory dataBufferFactory,
+            ResolvableType valueType,
+            MimeType mimeType,
+            Map<String, Object> hints) {
         return Flux.just(encodeValue(calendar, dataBufferFactory, valueType, mimeType, hints));
     }
 
     @Override
-    public DataBuffer encodeValue(Calendar value, DataBufferFactory bufferFactory, ResolvableType valueType, MimeType mimeType, Map<String, Object> hints) {
+    public DataBuffer encodeValue(
+            Calendar value,
+            DataBufferFactory bufferFactory,
+            ResolvableType valueType,
+            MimeType mimeType,
+            Map<String, Object> hints) {
         try {
             return bufferFactory.wrap(convertCalendarToByteArray(value));
         } catch (IOException e) {

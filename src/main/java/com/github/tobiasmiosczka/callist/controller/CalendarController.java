@@ -2,11 +2,12 @@ package com.github.tobiasmiosczka.callist.controller;
 
 import com.github.tobiasmiosczka.callist.model.DateRange;
 import com.github.tobiasmiosczka.callist.model.Position;
-import com.github.tobiasmiosczka.callist.service.SunshineEventService;
-import com.github.tobiasmiosczka.callist.service.WorkHoursEventService;
+import com.github.tobiasmiosczka.callist.service.sunshine.SunshineEventService;
+import com.github.tobiasmiosczka.callist.service.officehours.OfficeHoursEventService;
 import net.fortuna.ical4j.model.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,12 +22,12 @@ public class CalendarController {
     private final static int SIZE = 365;
 
     private final SunshineEventService sunshineEventService;
-    private final WorkHoursEventService workHoursEventService;
+    private final OfficeHoursEventService officeHoursEventService;
 
     @Autowired
-    public CalendarController(final SunshineEventService sunshineEventService, final WorkHoursEventService workHoursEventService) {
+    public CalendarController(final SunshineEventService sunshineEventService, final OfficeHoursEventService officeHoursEventService) {
         this.sunshineEventService = sunshineEventService;
-        this.workHoursEventService = workHoursEventService;
+        this.officeHoursEventService = officeHoursEventService;
     }
 
     //http://localhost:8080/sun/calendar.ics?latitude=51.56227&longitude=6.7434&altitude=0&token=1acd9867-bdda-4e56-afe1-32a7f7ad4913
@@ -52,7 +53,7 @@ public class CalendarController {
 
     @GetMapping(value = "/work-hours/calendar.ics", produces = TEXT_CALENDAR)
     public ResponseEntity<Calendar> getWorkHoursCalendar(@RequestParam final ZoneId zoneId) {
-        final Calendar calendar = workHoursEventService.getCalendar(zoneId);
+        final Calendar calendar = officeHoursEventService.getCalendar(zoneId);
         return new ResponseEntity<>(calendar, HttpStatus.OK);
     }
 }

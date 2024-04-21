@@ -1,7 +1,7 @@
-package com.github.tobiasmiosczka.callist.service;
+package com.github.tobiasmiosczka.callist.service.sunshine;
 
-import com.github.tobiasmiosczka.callist.CalendarBuilder;
-import com.github.tobiasmiosczka.callist.EventBuilder;
+import com.github.tobiasmiosczka.callist.calendar.CalendarBuilder;
+import com.github.tobiasmiosczka.callist.calendar.EventBuilder;
 import com.github.tobiasmiosczka.callist.model.DateRange;
 import com.github.tobiasmiosczka.callist.model.Position;
 import com.github.tobiasmiosczka.callist.model.Sunshine;
@@ -17,7 +17,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.github.tobiasmiosczka.callist.Cal4JUtil.toDateTime;
+import static com.github.tobiasmiosczka.callist.calendar.Cal4JUtil.toDateTime;
 
 @Service
 public class SunshineEventService {
@@ -43,7 +43,7 @@ public class SunshineEventService {
         return CalendarBuilder.builder()
                 .withId("-//Sun " + position.latitude() + " " + position.longitude() + " " + position.altitude() + "//EN")
                 .with(vTimeZone)
-                .with(events)
+                .withEvents(events)
                 .build();
     }
 

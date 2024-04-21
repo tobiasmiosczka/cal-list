@@ -46,34 +46,28 @@ public class EventBuilder {
         return this;
     }
 
-    public EventBuilder withStart(DateTime start) {
-        properties.add(new DtStart(start));
-        return this;
+    public EventBuilder withStart(final DateTime start) {
+        return with(new DtStart(start));
     }
 
-    public EventBuilder withEnd(DateTime end) {
-        properties.add(new DtEnd(end));
-        return this;
+    public EventBuilder withEnd(final DateTime end) {
+        return with(new DtEnd(end));
     }
 
-    public EventBuilder withSummary(String summary) {
-        properties.add(new Summary(summary));
-        return this;
+    public EventBuilder withSummary(final String summary) {
+        return with(new Summary(summary));
     }
 
-    public EventBuilder withDescription(String description) {
-        properties.add(new Description(description));
-        return this;
+    public EventBuilder withDescription(final String description) {
+        return with(new Description(description));
     }
 
-    public EventBuilder withLocation(String location) {
-        properties.add(new Location(location));
-        return this;
+    public EventBuilder withLocation(final String location) {
+        return with(new Location(location));
     }
 
-    public EventBuilder withRuleWeekly(DayOfWeek dayOfWeek) {
-        properties.add(generateWeeklyRule(dayOfWeek));
-        return this;
+    public EventBuilder withRuleWeekly(final DayOfWeek dayOfWeek) {
+        return with(generateWeeklyRule(dayOfWeek));
     }
 
     private static RRule generateWeeklyRule(final DayOfWeek dayOfWeek) {
@@ -84,5 +78,10 @@ public class EventBuilder {
             LOGGER.error("Could not create ", e);
             throw new RuntimeException(e);
         }
+    }
+
+    public EventBuilder withStartAndEnd(final DateTime dateTime) {
+        return withStart(dateTime)
+                .withEnd(dateTime);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.tobiasmiosczka.callist.service;
 
+import com.github.tobiasmiosczka.callist.model.Position;
 import com.github.tobiasmiosczka.callist.model.Sunshine;
 import net.time4j.Moment;
 import net.time4j.PlainDate;
@@ -26,13 +27,15 @@ public class SunshineService {
             final LocalDate from,
             final LocalDate to,
             final ZoneId zoneId,
-            final double latitude,
-            final double longitude,
-            final int altitude) {
-        final SolarTime solarTime = SolarTime.ofLocation(latitude, longitude, altitude, CALCULATOR);
+            final Position position) {
+        final SolarTime solarTime = ofPosition(position);
         return from.datesUntil(to)
                 .map(e -> getSunriseSunset(e, zoneId, solarTime))
                 .toList();
+    }
+
+    private SolarTime ofPosition(final Position position) {
+        return SolarTime.ofLocation(position.latitude(), position.longitude(), position.altitude(), CALCULATOR);
     }
 
     private Sunshine getSunriseSunset(final LocalDate date, final ZoneId zoneId, final SolarTime solarTime) {

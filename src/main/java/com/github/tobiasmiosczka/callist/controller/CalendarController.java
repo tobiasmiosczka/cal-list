@@ -1,5 +1,6 @@
 package com.github.tobiasmiosczka.callist.controller;
 
+import com.github.tobiasmiosczka.callist.model.Position;
 import com.github.tobiasmiosczka.callist.service.SunshineEventService;
 import com.github.tobiasmiosczka.callist.service.WorkHoursEventService;
 import net.fortuna.ical4j.model.Calendar;
@@ -37,10 +38,9 @@ public class CalendarController {
             @RequestParam(defaultValue = "Sunset") final String sunsetEventSummary,
             @RequestParam final ZoneId zoneId) {
         final LocalDate now = LocalDate.now();
+        final Position position = new Position(latitude, longitude, altitude);
         final Calendar calendar = sunshineEventService.getCalendar(
-                latitude,
-                longitude,
-                altitude,
+                position,
                 now,
                 now.plusDays(SIZE),
                 zoneId,

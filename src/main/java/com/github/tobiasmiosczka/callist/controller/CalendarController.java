@@ -1,5 +1,6 @@
 package com.github.tobiasmiosczka.callist.controller;
 
+import com.github.tobiasmiosczka.callist.model.DateRange;
 import com.github.tobiasmiosczka.callist.model.Position;
 import com.github.tobiasmiosczka.callist.service.SunshineEventService;
 import com.github.tobiasmiosczka.callist.service.WorkHoursEventService;
@@ -39,10 +40,10 @@ public class CalendarController {
             @RequestParam final ZoneId zoneId) {
         final LocalDate now = LocalDate.now();
         final Position position = new Position(latitude, longitude, altitude);
+        final DateRange dateRange = new DateRange(now, now.plusDays(SIZE));
         final Calendar calendar = sunshineEventService.getCalendar(
                 position,
-                now,
-                now.plusDays(SIZE),
+                dateRange,
                 zoneId,
                 sunriseEventSummary,
                 sunsetEventSummary);

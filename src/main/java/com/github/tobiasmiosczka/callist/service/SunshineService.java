@@ -1,5 +1,6 @@
 package com.github.tobiasmiosczka.callist.service;
 
+import com.github.tobiasmiosczka.callist.model.DateRange;
 import com.github.tobiasmiosczka.callist.model.Position;
 import com.github.tobiasmiosczka.callist.model.Sunshine;
 import net.time4j.Moment;
@@ -24,12 +25,11 @@ public class SunshineService {
     }
 
     public List<Sunshine> getSunriseSunset(
-            final LocalDate from,
-            final LocalDate to,
+            final DateRange dateRange,
             final ZoneId zoneId,
             final Position position) {
         final SolarTime solarTime = ofPosition(position);
-        return from.datesUntil(to)
+        return dateRange.asDates()
                 .map(e -> getSunriseSunset(e, zoneId, solarTime))
                 .toList();
     }

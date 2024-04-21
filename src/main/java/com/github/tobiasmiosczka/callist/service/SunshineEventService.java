@@ -2,6 +2,7 @@ package com.github.tobiasmiosczka.callist.service;
 
 import com.github.tobiasmiosczka.callist.CalendarBuilder;
 import com.github.tobiasmiosczka.callist.EventBuilder;
+import com.github.tobiasmiosczka.callist.model.DateRange;
 import com.github.tobiasmiosczka.callist.model.Position;
 import com.github.tobiasmiosczka.callist.model.Sunshine;
 import net.fortuna.ical4j.model.Calendar;
@@ -12,7 +13,6 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,13 +33,12 @@ public class SunshineEventService {
 
     public Calendar getCalendar(
             final Position position,
-            final LocalDate from,
-            final LocalDate to,
+            final DateRange dateRange,
             final ZoneId zoneId,
             final String sunriseEventSummary,
             final String sunsetEventSummary) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
-        final List<Sunshine> days = sunService.getSunriseSunset(from, to, zoneId, position);
+        final List<Sunshine> days = sunService.getSunriseSunset(dateRange, zoneId, position);
         final List<VEvent> events = getEvents(days, zoneId, vTimeZone, sunriseEventSummary, sunsetEventSummary);
         return CalendarBuilder.builder()
                 .withId("-//Sun " + position.latitude() + " " + position.longitude() + " " + position.altitude() + "//EN")

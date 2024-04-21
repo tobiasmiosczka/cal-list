@@ -46,7 +46,7 @@ public class WorkHoursEventService {
                 .build();
     }
 
-    private static List<VEvent> toEvents(final Map<DayOfWeek, Shift> shifts, final ZoneId zoneId) {
+    private List<VEvent> toEvents(final Map<DayOfWeek, Shift> shifts, final ZoneId zoneId) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         return Arrays.stream(values())
                 .filter(shifts::containsKey)
@@ -54,7 +54,7 @@ public class WorkHoursEventService {
                 .toList();
     }
 
-    private static VEvent toEvent(
+    private VEvent toEvent(
             final DayOfWeek dayOfWeek,
             final Shift shift,
             final ZoneId zoneId,
@@ -68,7 +68,7 @@ public class WorkHoursEventService {
                 .build();
     }
 
-    private static LocalDate getNextWeekDay(final DayOfWeek dayOfWeek) {
+    private LocalDate getNextWeekDay(final DayOfWeek dayOfWeek) {
         LocalDate now = LocalDate.now();
         long dayOffset = dayOfWeek.getValue() - now.getDayOfWeek().getValue();
         return now.plusDays(dayOffset);

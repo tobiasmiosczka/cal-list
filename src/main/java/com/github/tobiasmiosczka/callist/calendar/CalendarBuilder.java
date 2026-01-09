@@ -1,54 +1,55 @@
 package com.github.tobiasmiosczka.callist.calendar;
 
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CalendarBuilder {
 
-    private final Calendar actual;
-    private final PropertyList<Property> properties;
-    private final ComponentList<CalendarComponent> components;
+    private final List<Property> properties = new ArrayList<>();
+    private final List<CalendarComponent> components = new ArrayList<>();
+    private final Version version;
 
     public static CalendarBuilder builder() {
-        return new CalendarBuilder()
-                .withVersion(Version.VERSION_2_0);
+        return builder(new Version());
     }
 
-    private CalendarBuilder withVersion(final Version version) {
-        this.properties.add(version);
-        return this;
+    public static CalendarBuilder builder(Version version) {
+        return new CalendarBuilder(version);
     }
 
-    private CalendarBuilder() {
-        this.actual = new Calendar();
-        this.properties = this.actual.getProperties();
-        this.components = this.actual.getComponents();
+    private CalendarBuilder(Version version) {
+        this.version = version;
     }
 
     public Calendar build() {
-        return this.actual;
+        Calendar result = new Calendar();
+        result.add(version);
+        result.addAll(this.properties);
+        for (CalendarComponent component : this.components) {
+            result.add(component);
+        }
+        return result;
     }
 
-    public CalendarBuilder with(final Property property) {
+    public CalendarBuilder withId(final String value) {
+        return withProperty(new ProdId(value));
+    }
+
+    public CalendarBuilder withProperty(final Property property) {
         this.properties.add(property);
         return this;
     }
 
-    public CalendarBuilder with(final CalendarComponent component) {
+    public CalendarBuilder withComponent(final CalendarComponent component) {
         this.components.add(component);
         return this;
-    }
-
-    public CalendarBuilder withId(final String value) {
-        return with(new ProdId(value));
     }
 
     public CalendarBuilder withEvents(final List<VEvent> events) {

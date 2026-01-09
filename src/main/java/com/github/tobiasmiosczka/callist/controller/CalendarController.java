@@ -19,7 +19,8 @@ import static com.github.tobiasmiosczka.callist.configuration.CalendarEncoder.TE
 
 @Controller
 public class CalendarController {
-    private final static int SIZE = 365;
+
+    private static final int SIZE = 365;
 
     private final SunshineEventService sunshineEventService;
     private final OfficeHoursEventService officeHoursEventService;

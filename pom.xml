@@ -5,17 +5,22 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.4</version>
+		<version>4.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.github.tobiasmiosczka</groupId>
 	<artifactId>cal-list</artifactId>
-	<version>1.0.0</version>
+	<version>main-SNAPSHOT</version>
 	<name>cal-list</name>
-	<description>cal-list</description>
+
 	<properties>
 		<java.version>21</java.version>
+        <ical4j.version>4.2.3</ical4j.version>
+        <time4j-base.version>5.9.4</time4j-base.version>
+        <time4j-tzdata.version>5.0-2025a</time4j-tzdata.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -29,19 +34,16 @@
 		<dependency>
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
-			<version>3.2.17</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.time4j</groupId>
 			<artifactId>time4j-base</artifactId>
-			<version>5.9.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.time4j</groupId>
 			<artifactId>time4j-tzdata</artifactId>
-			<version>5.0-2022a</version>
 		</dependency>
 
 		<dependency>
@@ -49,21 +51,48 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mnode.ical4j</groupId>
+                <artifactId>ical4j</artifactId>
+                <version>${ical4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.time4j</groupId>
+                <artifactId>time4j-base</artifactId>
+                <version>${time4j-base.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.time4j</groupId>
+                <artifactId>time4j-tzdata</artifactId>
+                <version>${time4j-tzdata.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

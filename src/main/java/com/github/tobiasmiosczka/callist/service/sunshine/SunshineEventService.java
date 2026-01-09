@@ -17,8 +17,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.github.tobiasmiosczka.callist.calendar.Cal4JUtil.toDateTime;
-
 @Service
 public class SunshineEventService {
 
@@ -39,10 +37,10 @@ public class SunshineEventService {
             final String sunsetEventSummary) {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         final List<Sunshine> days = sunService.getSunriseSunset(dateRange, zoneId, position);
-        final List<VEvent> events = getEvents(days, zoneId, vTimeZone, sunriseEventSummary, sunsetEventSummary);
+        final List<VEvent> events = getEvents(days, zoneId, sunriseEventSummary, sunsetEventSummary);
         return CalendarBuilder.builder()
                 .withId("-//Sun " + position.latitude() + " " + position.longitude() + " " + position.altitude() + "//EN")
-                .with(vTimeZone)
+                .withComponent(vTimeZone)
                 .withEvents(events)
                 .build();
     }
@@ -50,20 +48,18 @@ public class SunshineEventService {
     private static List<VEvent> getEvents(
             final List<Sunshine> days,
             final ZoneId zoneId,
-            final VTimeZone vTimeZone,
             final String sunriseEventSummary,
             final String sunsetEventSummary) {
         return days.stream()
                 .flatMap(e -> Stream.of(
                         EventBuilder.builder()
-                                .withStartAndEnd(toDateTime(e.getSunrise(), zoneId, vTimeZone))
+                                .withStartAndEnd(e.getSunrise().atZone(zoneId))
                                 .withSummary(sunriseEventSummary)
                                 .build(),
                         EventBuilder.builder()
-                                .withStartAndEnd(toDateTime(e.getSunset(), zoneId, vTimeZone))
+                                .withStartAndEnd(e.getSunset().atZone(zoneId))
                                 .withSummary(sunsetEventSummary)
                                 .build()))
                 .toList();
     }
-
 }

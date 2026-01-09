@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.tobiasmiosczka.callist.calendar.Cal4JUtil.toDateTime;
 import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.THURSDAY;
@@ -41,36 +40,31 @@ public class OfficeHoursEventService {
         final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         return CalendarBuilder.builder()
                 .withId("-//WorkHours//EN")
-                .with(vTimeZone)
+                .withComponent(vTimeZone)
                 .withEvents(toEvents(shifts, zoneId))
                 .build();
     }
 
     private List<VEvent> toEvents(final Map<DayOfWeek, Shift> shifts, final ZoneId zoneId) {
-        final VTimeZone vTimeZone = REGISTRY.getTimeZone(zoneId.toString()).getVTimeZone();
         return Arrays.stream(values())
                 .filter(shifts::containsKey)
-                .map(dayOfWeek -> toEvent(dayOfWeek, shifts.get(dayOfWeek), zoneId, vTimeZone))
+                .map(dayOfWeek -> toEvent(dayOfWeek, shifts.get(dayOfWeek), zoneId))
                 .toList();
     }
 
-    private VEvent toEvent(
-            final DayOfWeek dayOfWeek,
-            final Shift shift,
-            final ZoneId zoneId,
-            final VTimeZone vTimeZone) {
+    private VEvent toEvent(final DayOfWeek dayOfWeek, final Shift shift, final ZoneId zoneId) {
         final LocalDate date = getNextWeekDay(dayOfWeek);
         return EventBuilder.builder()
                 .withSummary("Office Hours")
-                .withStart(toDateTime(date.atTime(shift.getStart()), zoneId, vTimeZone))
-                .withEnd(toDateTime(date.atTime(shift.getEnd()), zoneId, vTimeZone))
+                .withStart(date.atTime(shift.getStart()).atZone(zoneId))
+                .withEnd(date.atTime(shift.getEnd()).atZone(zoneId))
                 .withRuleWeekly(dayOfWeek)
                 .build();
     }
 
     private LocalDate getNextWeekDay(final DayOfWeek dayOfWeek) {
         LocalDate now = LocalDate.now();
-        long dayOffset = dayOfWeek.getValue() - now.getDayOfWeek().getValue();
+        int dayOffset = dayOfWeek.getValue() - now.getDayOfWeek().getValue();
         return now.plusDays(dayOffset);
     }
 
